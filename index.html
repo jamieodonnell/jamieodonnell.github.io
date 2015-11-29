@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Global Terrorism Attacks </title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="css/own_style.css">
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+		<script src="js/leaflet-hash.js"></script>
+		<script src="js/Autolinker.min.js"></script>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	</head>
+	<body>
+		<div id = "header">
+		<h1>Global Terrorist Attacks by Type</h1>
+		</div> 
+		<div id = "tagline">
+			Click on countries to see a breakdown of the types of terrorist attacks they suffered between the years 1971 - 2014 <br><br>
+			All data courtesy of the Global Terrorism database found at <a href="http://www.start.umd.edu/gtd/">http://www.start.umd.edu/gtd/</a><br><br>
+		</div>
+		<div id="map"></div>
+		<script src="data/exp_GTDLeaf.js"></script>
+		<script>
+		var map = L.map('map', {
+			zoomControl:true, maxZoom:19
+		}).fitBounds([[130,-130.0],[130,130]]);
+		var hash = new L.Hash(map);
+		var additional_attrib = 'created by<a href="https://github.com/geolicious/qgis2leaf" target ="_blank"> Jamie ODonnell</a><a href="http://www.geolicious.de" target ="_blank"></a><br>';
+		var feature_group = new L.featureGroup([]);
+		var raster_group = new L.LayerGroup([]);
+		var MapQuestOpen_Aerial = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+				type: 'sat',
+				ext: 'jpg',
+				attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Portions Courtesy NASA/JPL-Caltech and U. Depart. of Agriculture, Farm Service Agency',
+				subdomains: '1234'
+		});	
+		MapQuestOpen_Aerial.addTo(map);	
+		var layerOrder=new Array();
+		function pop_GTDLeaf(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">Country:</th><td>' + Autolinker.link(String(feature.properties['admin'])) + '</td></tr><tr><th scope="row">armassault</th><td>' + Autolinker.link(String(feature.properties['armassault'])) + '</td></tr><tr><th scope="row">assassin</th><td>' + Autolinker.link(String(feature.properties['assassin'])) + '</td></tr><tr><th scope="row">bombing</th><td>' + Autolinker.link(String(feature.properties['bombing'])) + '</td></tr><tr><th scope="row">facility</th><td>' + Autolinker.link(String(feature.properties['facility'])) + '</td></tr><tr><th scope="row">hijacking</th><td>' + Autolinker.link(String(feature.properties['hijacking'])) + '</td></tr><tr><th scope="row">hostage</th><td>' + Autolinker.link(String(feature.properties['hostage'])) + '</td></tr><tr><th scope="row">hostage1</th><td>' + Autolinker.link(String(feature.properties['hostage1'])) + '</td></tr><tr><th scope="row">unarmed</th><td>' + Autolinker.link(String(feature.properties['unarmed'])) + '</td></tr><tr><th scope="row">unknown</th><td>' + Autolinker.link(String(feature.properties['unknown'])) + '</td></tr><tr><th scope="row">grandtotal</th><td>' + Autolinker.link(String(feature.properties['grandtotal'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		function doStyleGTDLeaf(feature) {
+			if (feature.properties.armassault >= 0.0 && feature.properties.armassault <= 500.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#2b83ba',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 500.0 && feature.properties.armassault <= 1000.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#80bfab',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 1000.0 && feature.properties.armassault <= 1500.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#c7e8ad',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 1500.0 && feature.properties.armassault <= 2000.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#ffffbf',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 2000.0 && feature.properties.armassault <= 2500.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#fdc980',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 2500.0 && feature.properties.armassault <= 3000.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#f07c4a',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+			if (feature.properties.armassault >= 3000.0 && feature.properties.armassault <= 3017.0) {
+				return {
+					color: '#000000',
+					weight: '1.3',
+					fillColor: '#d7191c',
+					opacity: '1.0',
+					fillOpacity: '0.4',
+				}
+			}
+		}
+		var exp_GTDLeafJSON = new L.geoJson(exp_GTDLeaf,{
+			onEachFeature: pop_GTDLeaf,
+			style: doStyleGTDLeaf
+
+		});
+		//add comment sign to hide this layer on the map in the initial view.
+		feature_group.addLayer(exp_GTDLeafJSON);
+
+		feature_group.addTo(map);
+		var multipolygon = L.geoJson(foret);
+		multipolygon.addTo(map);
+		map.fitBounds(multipolygon.getBounds());
+		var title = new L.Control();
+		title.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
+		title.update = function () {
+			this._div.innerHTML = '<h2>SRTM Coastal Tiles</h2>Trial Leaflet Map'
+		};
+		title.addTo(map);
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (map) {
+			var div = L.DomUtil.create('div', 'info legend');
+			div.innerHTML = "<h3>Legend</h3><table></table>";
+    		return div;
+		};
+		legend.addTo(map);
+	var baseMaps = {
+		'OSM DE': MapQuestOpen_Aerial
+	};
+		L.control.layers(MapQuestOpen_Aerial,{"GTDLeaf": exp_GTDLeafJSON},{collapsed:false}).addTo(map);
+		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
+	</script>
+	<div id = "footer">
+		<br><br><br><br><br>
+	</div>
+</body>
+</html>
