@@ -4,10 +4,13 @@ body {
 	margin-right:auto;
 	font-size: 20;
 	text-align: center;
-	padding-top:10;
+	padding-top:30;
 	font-family: Ubuntu;
 	background: #424242;
 	color: #FAFAFA;
+	border-style: solid;
+	border-width: medium;
+	border-color: white;
 }
 #map_canvas {
 	margin: auto;
@@ -18,3 +21,21 @@ body {
 	
 	
 }
+
+#top, #bottom, #left, #right {
+	background: white;
+	position: fixed;
+	}
+	#left, #right {
+		top: 0; bottom: 0;
+		width: 15px;
+		}
+		#left { left: 0; }
+		#right { right: 0; }
+		
+	#top, #bottom {
+		left: 0; right: 0;
+		height: 15px;
+		}
+		#top { top: 0; }
+		#bottom { bottom: 0; }
