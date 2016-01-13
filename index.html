@@ -11,6 +11,8 @@
     <script src="easy-button.js"></script>
     <script src="Autolinker.min.js"></script>
 	<script type="text/javascript" src="jamie.js"> </script>
+    <style>.leaflet-control-layers-expanded { background: #242426;
+    color: white}</style>
 </head>
 <body>
 	<div id ="container">
@@ -881,7 +883,7 @@
 //@@@@@@@@@ Legends @@@@@@@@@@@@
 
         var ArmedAssaultL = L.control({position: 'bottomright'});
-        var AssassinL = L.control({position: 'bottomright'});
+        var AssassinationL = L.control({position: 'bottomright'});
         var BombingL = L.control({position: 'bottomright'});
         var FacilityL = L.control({position: 'bottomright'});
         var HijackingL = L.control({position: 'bottomright'});
@@ -889,6 +891,7 @@
         var UnarmedL = L.control({position: 'bottomright'});
         var UnknownL = L.control({position: 'bottomright'});
         var TotalL = L.control({position: 'bottomright'});
+        var PlaceholderL = L.control({position: 'bottomright'});
 
 
 
@@ -899,10 +902,7 @@
             return div;
         };
 
-        ArmedAssaultL.addTo(map);
-        
-
-        AssassinL.onAdd = function(map) {
+        AssassinationL.onAdd = function(map) {
         var div = L.DomUtil.create('div', 'info legend');
             div.innerHTML += "<iframe src='"+ "http://i.imgur.com/0CmidSo.jpg" +"' width='180' height='187' frameborder='0'></iframe>"
         return div;
@@ -952,19 +952,22 @@
 
         TotalL.onAdd = function(map) {
         var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML += "<iframe src='"+ "http://i.imgur.com/KTOIs4S.jpg" +"' width='180' height='187' frameborder='0'></iframe>"
+            div.innerHTML += "<iframe src='"+ "http://i.imgur.com/1yZFF7U.jpg" +"' width='180' height='187' frameborder='0'></iframe>"
         return div;
         };
+        
 
-
-
-
+        PlaceholderL.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML += "<iframe src='"+ "http://i.imgur.com/1yZFF7U.jpg" +"' width='0' height='0' frameborder='0'></iframe>"
+        return div;
+        };
 
 //@@@@@@@@@@@@@ Overlay Control 
 
         var overlays = {
             "Armed Assault": armassaultlayer,
-            "Assasination": assassinlayer,
+            "Assassination": assassinlayer,
             "Bombing": bombinglayer,
             "Facility Attack": facilitylayer,
             "Hostage Situation": hostagelayer,
@@ -978,15 +981,66 @@
         L.control.layers(overlays,null,{collapsed:false}).addTo(map);
 
 //@@@@@@@@@@@@@  Legend Control
+        
+        currentLegend = PlaceholderL;
+        PlaceholderL.addTo(map);
 
-    map.on('overlayadd', function (eventLayer) {
-    if (eventLayer.name === 'bombinglayer') {
-        BombingL.addTo(map);
-        map.removeControl(ArmedAssaultL);
-    } else {
-        map.removeControl(ArmedAssaultL);
-    }
-    });
+        map.on('baselayerchange', function (eventLayer) {
+            if (eventLayer.name === 'Armed Assault') { 
+            map.removeControl(currentLegend); 
+            currentLegend = ArmedAssaultL; 
+            ArmedAssaultL.addTo(map); 
+            } 
+            else if (eventLayer.name === 'Assassination') { 
+            map.removeControl(currentLegend); 
+            currentLegend = AssassinationL; 
+            AssassinationL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Bombing') { 
+            map.removeControl(currentLegend); 
+            currentLegend = BombingL; 
+            BombingL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Hijacking') { 
+            map.removeControl(currentLegend); 
+            currentLegend = HijackingL; 
+            HijackingL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Hostage Situation') { 
+            map.removeControl(currentLegend); 
+            currentLegend = HostageL; 
+            HostageL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Facility Attack') { 
+            map.removeControl(currentLegend); 
+            currentLegend = FacilityL; 
+            FacilityL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Unarmed') { 
+            map.removeControl(currentLegend); 
+            currentLegend = UnarmedL; 
+            UnarmedL.addTo(map); 
+
+            } 
+            else if (eventLayer.name === 'Unknown Type') { 
+            map.removeControl(currentLegend); 
+            currentLegend = UnknownL; 
+            UnknownL.addTo(map); 
+
+            } 
+
+            else if (eventLayer.name === 'Total Attacks') { 
+            map.removeControl(currentLegend); 
+            currentLegend = TotalL; 
+            TotalL.addTo(map); 
+
+            } 
+            })
 
 
 //@@@@@@@@@@@@@  Popups
@@ -996,10 +1050,6 @@
             var popupContent = '<table><tr><th scope="row">Country:</th><td>' + Autolinker.link(String(feature.properties['admin'])) + '</td></tr><tr><th scope="row">Armed Assault</th><td>' + Autolinker.link(String(feature.properties['armassault'])) + '</td></tr><tr><th scope="row">Assasination</th><td>' + Autolinker.link(String(feature.properties['assassin'])) + '</td></tr><tr><th scope="row">Bomb Attack</th><td>' + Autolinker.link(String(feature.properties['bombing'])) + '</td></tr><tr><th scope="row">Facility Attack</th><td>' + Autolinker.link(String(feature.properties['facility'])) + '</td></tr><tr><th scope="row">Hijacking</th><td>' + Autolinker.link(String(feature.properties['hijacking'])) + '</td></tr><tr><th scope="row">Hostage</th><td>' + Autolinker.link(String(feature.properties['hostage'])) + '</td></tr><tr><th scope="row">Unarmed</th><td>' + Autolinker.link(String(feature.properties['unarmed'])) + '</td></tr><tr><th scope="row">Unknown</th><td>' + Autolinker.link(String(feature.properties['unknown'])) + '</td></tr><tr><th scope="row">Total Attacks</th><td>' + Autolinker.link(String(feature.properties['grandtotal'])) + '</td></tr></table>';
             layer.bindPopup(popupContent);
         }
-
-
-
-
 
 //@@@@@@@@@@@@@ Pan out button
 
