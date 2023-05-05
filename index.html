@@ -26,6 +26,10 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+<script src="leaflet-gplaces-autocomplete.js"></script>
+<link rel="stylesheet" href="leaflet-gplaces-autocomplete.css" >
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPrxXxJ-PY1AC9o0u9L2jB9QaIP8flFmE&libraries=places&callback=Function.prototype" ></script>   
+
 
 <script>
 
@@ -90,6 +94,20 @@
             console.log(e);
             alert("Location access has been denied.");
         });
+
+
+new L.Control.GPlaceAutocomplete({
+    callback: function(place){
+        //if (typeof marker !== 'undefined'|| variable === null) {} else {map.removeLayer(marker);};
+        var loc = place.geometry.location;
+        var marker = L.marker([loc.lat(), loc.lng()]);
+        map.setView( [loc.lat(), loc.lng()], 12);
+        var marker = L.marker([loc.lat(), loc.lng()]);
+        marker.on('click', function(e){
+        map.setView(e.latlng, 13);
+});
+    },autocomplete_options:{componentRestrictions: {country: 'GB'}}
+}).addTo(map);
 
 
 </script>
